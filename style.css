@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #000;
+    background: radial-gradient(#fffffff1, #e0b2b2);
     color: #fff;
     overflow: hidden;
 }
@@ -34,28 +34,31 @@ body {
     width: 100%;
     max-width: calc(9 / 16 * 100vh);
     object-fit: cover;
+    border: 3px solid rgb(255, 116, 24);
 }
   
 .text-overlay {
     position: absolute;
     top: 20px;
     left: 20px;
-    background: rgba(0, 0, 0, 0.7);
+    background: radial-gradient(#ff5e00f1, #ff0000);
     padding: 10px;
     border-radius: 5px;
 }
   
 .video-info {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    bottom: 35px;
+    left: 10px;
 }
+
+
   
 .details-btn {
     background: #007bff;
     color: #fff;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 50px;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -63,3 +66,4 @@ body {
 .details-btn:hover {
     background: #0056b3;
 }
+
