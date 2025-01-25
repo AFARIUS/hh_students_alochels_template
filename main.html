@@ -2,36 +2,63 @@
 <html lang="ru">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <title>Videos</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Videos</title>
 </head>
 
 <body>
-  <section class="videos">
-    <div class="video-box">
-      <video preload="none" poster="vert1.png" autoplay muted loop playsinline>
-        <source src="vert1.mp4" type="video/mp4">
-      </video>
-    </div>
-    <div class="video-box">
-      <video preload="none" poster="vert2.png" autoplay muted loop playsinline>
-        <source src="vert2.mp4" type="video/mp4">
-      </video>
-    </div>
-    <div class="video-box">
-      <video preload="none" poster="vert1.png" autoplay muted loop playsinline>
-        <source src="vert1.mp4" type="video/mp4">
-      </video>
-    </div>
-    <div class="video-box">
-      <video preload="none" poster="vert2.png" autoplay muted loop playsinline>
-        <source src="vert2.mp4" type="video/mp4">
-      </video>
-    </div>
-  </section>
+    <section class="videos">
+        <div class="video-box">
+            <video preload="none" poster="vert1.png" autoplay muted loop playsinline>
+            <source src="vert1.mp4" type="video/mp4">
+            </video>
+            <div class="description" onclick="openSidePanel('Это полное описание видео. Оно может быть длинным и содержать много текста.')">
+                <div class="description-text" id="desc1">
+                Это краткое описание видео. Оно может быть длинным и содержать много текста.
+                </div>
+            </div>
+        </div>
+        <div class="video-box">
+            <video preload="none" poster="vert2.png" autoplay muted loop playsinline>
+            <source src="vert2.mp4" type="video/mp4">
+            </video>
+            <div class="description" onclick="openSidePanel('Это полное описание видео. Оно может быть длинным и содержать много текста.')">
+                <div class="description-text" id="desc1">
+                Это краткое описание видео. Оно может быть длинным и содержать много текста.
+                </div>
+            </div>
+        </div>
+        <div class="video-box">
+            <video preload="none" poster="vert1.png" autoplay muted loop playsinline>
+            <source src="vert1.mp4" type="video/mp4">
+            </video>
+            <div class="description" onclick="openSidePanel('Это полное описание видео. Оно может быть длинным и содержать много текста.')">
+                <div class="description-text" id="desc1">
+                Это краткое описание видео. Оно может быть длинным и содержать много текста.
+                </div>
+            </div>
+        </div>
+        <div class="video-box">
+            <video preload="none" poster="vert2.png" autoplay muted loop playsinline>
+            <source src="vert2.mp4" type="video/mp4">
+            </video>
+            <div class="description" onclick="openSidePanel('Это полное описание видео. Оно может быть длинным и содержать много текста.')">
+                <div class="description-text" id="desc1">
+                Это краткое описание видео. Оно может быть длинным и содержать много текста.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="side-panel" id="sidePanel">
+        <div class="close-btn" onclick="closeSidePanel()"></div>
+        <div id="sidePanelContent"></div>
+      </div>
+
+    <script src="functions.js"></script>
 </body>
 
 </html>
