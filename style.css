@@ -1,0 +1,18 @@
+html /* IMPORTANT: scroll-snap-type won't work with body selector, so replace it with html */ {
+    background-color: #090909;
+    scroll-snap-type: y mandatory; /* Define snapping behavior. "y" indicates vertical behavior, "mandatory" won't allow the user to stay in-between two pages. */
+  }
+
+  .video-box {
+    display: flex;
+    align-items: center;
+    scroll-snap-align: center; /* Define snapping target. Can also be "center" or "end". */
+  }
+
+  .video-box video {
+    box-sizing: border-box;
+    padding: 8px;
+    margin: 0 auto;
+    max-height: 100vh;
+    max-width: 100%;
+  }
