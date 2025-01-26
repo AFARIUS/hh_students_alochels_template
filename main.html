@@ -8,33 +8,45 @@
 </head>
 <body>
     <div class="container">
-        <!-- Строка поиска и фильтры -->
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Поиск...">
-            <select id="countryFilter">
-                <option value="">Страна</option>
-                <option value="USA">США</option>
-                <option value="Belarus">Беларусь</option>
-                <option value="Russia">Россия</option>
-            </select>
-            <select id="cityFilter">
-                <option value="">Город</option>
-                <option value="Minsk">Минск</option>
-                <option value="Moscow">Москва</option>
-                <option value="Pushkin">Пушкин</option>
-            </select>
-            <select id="professionFilter">
-                <option value="">Профессия</option>
-                <option value="IT">IT</option>
-                <option value="Marketing">Маркетинг</option>
-                <option value="Design">Дизайн</option>
-            </select>
+        <!-- Иконка лупы -->
+        <div class="search-icon" onclick="openSearch()">🔍</div>
+
+        <!-- Строка поиска (скрыта по умолчанию) -->
+        <div class="search-overlay">
+            <div class="search-container">
+                <div class="close-icon" onclick="closeSearch()">←</div>
+                <input type="text" id="searchInput" placeholder="Поиск...">
+                <button id="filterButton">Фильтры</button>
+            </div>
         </div>
 
         <!-- Контейнер для видео -->
         <div id="videoContainer" class="video-container">
             <!-- Видео будут добавляться сюда -->
         </div>
+    </div>
+
+    <!-- Слайдер фильтров -->
+    <div class="filter-slider">
+        <select id="countryFilterSlider">
+            <option value="">Страна</option>
+            <option value="USA">США</option>
+            <option value="Belarus">Беларусь</option>
+            <option value="Russia">Россия</option>
+        </select>
+        <select id="cityFilterSlider">
+            <option value="">Город</option>
+            <option value="Minsk">Минск</option>
+            <option value="Moscow">Москва</option>
+            <option value="Pushkin">Пушкин</option>
+        </select>
+        <select id="professionFilterSlider">
+            <option value="">Профессия</option>
+            <option value="IT">IT</option>
+            <option value="Marketing">Маркетинг</option>
+            <option value="Design">Дизайн</option>
+        </select>
+        <button onclick="applyFilters()">Применить</button>
     </div>
 
     <script src="functions.js"></script>

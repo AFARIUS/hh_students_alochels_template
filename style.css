@@ -12,7 +12,6 @@ body {
 
 ::-webkit-scrollbar {
   display: none;
-
 }
 
 .container {
@@ -26,52 +25,118 @@ body {
   box-sizing: border-box;
 }
 
-/* Строка поиска и фильтры */
-.search-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  background-color: rgba(255, 255, 255, 0.1);
-  width: 100%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  box-sizing: border-box;
-  position: fixed; /* Фиксированная позиция */
-  top: 0; /* Прижато к верхнему краю */
-  z-index: 2; /* Над видео */
-  background: linear-gradient(to bottom, #ff0000, #ff4500); /* Красный фон */
+/* Иконка лупы */
+.search-icon {
+  position: fixed;
+  right: 20px;
+  top: calc(50% - 80px); /* Лупа ниже, чем раньше */
+  font-size: 48px; /* Увеличен размер */
+  cursor: pointer;
+  z-index: 3;
 }
 
-.search-bar input, .search-bar select {
-  padding: 6px;
+/* Оверлей для строки поиска */
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 4;
+  display: none;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px; /* 100px от верхнего края */
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 90%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.close-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: #000;
+}
+
+.search-container input {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #f0f0f0;
+}
+
+.search-container button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ff4500;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Слайдер фильтров */
+.filter-slider {
+  position: fixed;
+  top: 160px; /* Ниже строки поиска */
+  right: 20px;
+  background-color: rgba(128, 128, 128, 0.7);
+  padding: 10px;
+  border-radius: 8px;
+  z-index: 5;
+  display: none;
+}
+
+.filter-slider.active {
+  display: block;
+}
+
+.filter-slider select {
+  padding: 8px;
   border: none;
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.8);
   color: #000;
-  font-size: 12px;
-  width: 30%; /* Равномерное распределение ширины */
-  box-sizing: border-box;
+  font-size: 14px;
+  width: 100%;
+  margin-bottom: 8px;
 }
 
-.search-bar input {
-  width: 40%; /* Поисковая строка немного шире */
+.filter-slider button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ff4500;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 /* Контейнер для видео */
 .video-container {
   width: 100%;
-  height: calc(100vh - 60px); /* Учитываем высоту строки поиска */
+  height: 100vh;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   box-sizing: border-box;
-  margin-top: 60px; /* Отступ сверху для строки поиска */
 }
 
 /* Карточка видео */
 .video-card {
   width: 100%;
-  height: calc(100vh - 60px); /* Высота минус строка поиска */
+  height: 100vh;
   scroll-snap-align: start;
   position: relative;
   display: flex;
@@ -90,103 +155,47 @@ video {
   top: 0;
   left: 0;
   z-index: 0;
-  background-color: #000; /* Фон для видео */
+  background-color: #000;
 }
 
 /* Информация о видео */
 .video-info {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  right: 10px;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
   background: rgba(0, 0, 0, 0.7);
-  padding: 8px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 12px;
   z-index: 1;
   box-sizing: border-box;
-  transition: transform 0.3s ease, opacity 0.3s ease; /* Анимация перемещения и прозрачности */
-  cursor: pointer; /* Курсор в виде указателя */
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  cursor: pointer;
 }
-
-/* Подробное описание */
-.video-details {
-  position: absolute;
-  bottom: -100%; /* Начальное положение за пределами экрана */
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.9);
-  padding: 16px;
-  border-radius: 8px 8px 0 0;
-  z-index: 2;
-  box-sizing: border-box;
-  transition: bottom 0.3s ease; /* Анимация появления */
-}
-
-/* Анимация при нажатии на видео */
-.video-card.active .video-info {
-  transform: translateY(-80px); /* Перемещение вверх */
-}
-
-.video-card.active .video-details {
-  bottom: 0; /* Появление подробного описания */
-}
-
 
 .video-info h3 {
   margin: 0;
-  font-size: 16px;
+  font-size: 24px;
 }
 
 .video-info p {
-  margin: 4px 0 0;
-  font-size: 12px;
+  margin: 8px 0 0;
+  font-size: 18px;
 }
 
 /* Кнопка избранного */
 .favorite-button {
   position: absolute;
-  top: 70px; /* Отступ сверху, чтобы не перекрывалась строкой поиска */
-  right: 10px;
+  top: calc(50% - 240px); /* Звезда выше, чем раньше */
+  right: 20px;
   background: none;
   border: none;
   color: #fff;
-  font-size: 20px;
+  font-size: 56px; /* Увеличен размер */
   cursor: pointer;
-  z-index: 3; /* Над всеми элементами */
+  z-index: 3;
 }
 
 .favorite-button.active {
   color: #ffcc00;
-}
-
-/* Адаптация для экрана 720x1280 */
-@media (max-width: 720px) {
-  .search-bar {
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 6px;
-  }
-
-  .search-bar input, .search-bar select {
-      width: 48%; /* Два элемента в строке */
-      font-size: 10px;
-      padding: 4px;
-  }
-
-  .search-bar input {
-      width: 100%; /* Поисковая строка занимает всю ширину */
-  }
-
-  .video-info h3 {
-      font-size: 14px;
-  }
-
-  .video-info p {
-      font-size: 10px;
-  }
-
-  .favorite-button {
-      font-size: 35px;
-      top: 60px; /* Корректировка для мобильных устройств */
-  }
 }

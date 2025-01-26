@@ -8,19 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     const videoContainer = document.getElementById('videoContainer');
     const searchInput = document.getElementById('searchInput');
-    const countryFilter = document.getElementById('countryFilter');
-    const cityFilter = document.getElementById('cityFilter');
-    const professionFilter = document.getElementById('professionFilter');
-
-    let currentVideoElement = null; // Текущее видео, которое воспроизводится
+    const filterButton = document.getElementById('filterButton');
+    const filterSlider = document.querySelector('.filter-slider');
+    const searchOverlay = document.querySelector('.search-overlay');
+    let currentVideoElement = null;
+    let isSearchOpen = false;
 
     function loadVideos(filteredVideos = videos) {
         videoContainer.innerHTML = '';
-        filteredVideos.forEach((video, index) => {
+        filteredVideos.forEach((video) => {
             const videoCard = document.createElement('div');
             videoCard.className = 'video-card';
             videoCard.innerHTML = `
-                <video id="video${video.id}" onclick="togglePause(${video.id})">
+                <video id="video${video.id}" onclick="togglePause(${video.id})" loop>
                     <source src="${video.videoUrl}" type="video/mp4">
                 </video>
                 <div class="video-info">
@@ -32,39 +32,35 @@ document.addEventListener('DOMContentLoaded', () => {
             videoContainer.appendChild(videoCard);
         });
 
-        // Настройка автоматического воспроизведения текущего видео
         setupVideoAutoplay();
     }
 
-    // Функция для автоматического воспроизведения текущего видео
     function setupVideoAutoplay() {
         const videoElements = document.querySelectorAll('.video-card video');
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     const video = entry.target;
-                    if (entry.isIntersecting) {
-                        // Если видео в зоне видимости, воспроизводим его
+                    if (entry.isIntersecting && !isSearchOpen) {
                         video.play();
                         currentVideoElement = video;
                     } else {
-                        // Если видео вне зоны видимости, останавливаем его
                         video.pause();
-                        video.currentTime = 0; // Сбрасываем время воспроизведения
                     }
                 });
             },
-            {
-                threshold: 0.5, // Видео считается видимым, если 50% его площади на экране
-            }
+            { threshold: 0.5 }
         );
 
         videoElements.forEach((video) => {
             observer.observe(video);
+            video.addEventListener('ended', () => {
+                video.currentTime = 0; // Зацикливание видео
+                video.play();
+            });
         });
     }
 
-    // Функция для управления паузой при нажатии на видео
     window.togglePause = (id) => {
         const video = document.getElementById(`video${id}`);
         if (video.paused) {
@@ -74,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Функция для добавления/удаления видео в избранное
     window.toggleFavorite = (id) => {
         const video = videos.find(v => v.id === id);
         const favoriteButton = document.querySelector(`#video${id} + .video-info + .favorite-button`);
@@ -88,12 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('favorites', JSON.stringify(favorites));
     };
 
-    // Функция для фильтрации видео
-    function filterVideos() {
+    window.applyFilters = () => {
         const searchTerm = searchInput.value.toLowerCase();
-        const country = countryFilter.value;
-        const city = cityFilter.value;
-        const profession = professionFilter.value;
+        const country = document.getElementById('countryFilterSlider').value;
+        const city = document.getElementById('cityFilterSlider').value;
+        const profession = document.getElementById('professionFilterSlider').value;
 
         const filteredVideos = videos.filter(video => {
             return (video.title.toLowerCase().includes(searchTerm) || video.description.toLowerCase().includes(searchTerm)) &&
@@ -103,14 +97,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         loadVideos(filteredVideos);
-    }
+    };
 
-    // Слушатели событий для фильтрации
-    searchInput.addEventListener('input', filterVideos);
-    countryFilter.addEventListener('change', filterVideos);
-    cityFilter.addEventListener('change', filterVideos);
-    professionFilter.addEventListener('change', filterVideos);
+    window.openSearch = () => {
+        isSearchOpen = true;
+        searchOverlay.style.display = 'flex';
+        if (currentVideoElement) {
+            currentVideoElement.pause();
+        }
+    };
 
-    // Загрузка видео при старте
+    window.closeSearch = () => {
+        isSearchOpen = false;
+        searchOverlay.style.display = 'none';
+        filterSlider.classList.remove('active'); // Закрытие меню фильтров
+        if (currentVideoElement) {
+            currentVideoElement.play();
+        }
+    };
+
+    filterButton.addEventListener('click', () => {
+        filterSlider.classList.toggle('active');
+    });
+
+    searchInput.addEventListener('input', applyFilters);
+
     loadVideos();
 });
