@@ -1,3 +1,35 @@
+// Функция для определения типа устройства
+function detectDevice() {
+    const userAgent = navigator.userAgent;
+
+    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(userAgent)) {
+        return 'mobile';
+    } else if (/Tablet|iPad|PlayBook|Silk|Kindle|(Android(?!.*Mobile))/.test(userAgent)) {
+        return 'tablet';
+    } else {
+        return 'desktop';
+    }
+}
+
+// Функция для изменения верстки в зависимости от устройства
+function changeLayout() {
+    const device = detectDevice();
+    const body = document.body;
+
+    // Удаляем предыдущие классы, если они есть
+    body.classList.remove('mobile-layout', 'tablet-layout', 'desktop-layout');
+
+    // Добавляем класс в зависимости от устройства
+    if (device === 'mobile') {
+        body.classList.add('mobile-layout');
+    } else {
+        body.classList.add('desktop-layout');
+    }
+}
+
+// Вызов функции при загрузке страницы
+window.onload = changeLayout;
+
 // Обработка кнопки "Подробнее"
 const detailsButtons = document.querySelectorAll('.details-btn');
 detailsButtons.forEach(button => {
@@ -18,41 +50,72 @@ videos.forEach(video => {
     video.muted = true; // Отключаем звук для автоматического воспроизведения в Chrome
 });
 
-videoFeed.addEventListener('scroll', () => {
-    if (!isScrolling) {
-        isScrolling = true;
-        setTimeout(() => {
-            const videoContainers = document.querySelectorAll('.video-container');
+// Функция для переключения видео
+function switchVideo(direction) {
+    const videoContainers = document.querySelectorAll('.video-container');
+    let currentIndex = -1;
 
-            // Находим текущее активное видео
-            let currentVideo = null;
-            let currentContainer = null;
+    // Находим индекс текущего активного видео
+    videoContainers.forEach((container, index) => {
+        const rect = container.getBoundingClientRect();
+        if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+            currentIndex = index;
+        }
+    });
 
-            videoContainers.forEach((container, index) => {
-                const rect = container.getBoundingClientRect();
-                if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-                    currentVideo = videos[index];
-                    currentContainer = container;
-                }
-            });
+    // Определяем индекс следующего видео
+    let nextIndex = currentIndex + direction;
 
-            // Останавливаем все видео, кроме текущего, и перематываем их в начало
-            videos.forEach(video => {
-                if (video !== currentVideo) {
-                    video.pause();
-                    video.currentTime = 0; // Перемотка в начало
-                }
-            });
+    // Проверяем границы
+    if (nextIndex < 0) {
+        nextIndex = 0; // Остаемся на первом видео
+    } else if (nextIndex >= videoContainers.length) {
+        nextIndex = videoContainers.length - 1; // Остаемся на последнем видео
+    }
 
-            // Воспроизводим текущее видео, если оно не воспроизводится
-            if (currentVideo && currentVideo.paused) {
-                currentVideo.play().catch(error => {
-                    console.error('Ошибка при воспроизведении видео:', error);
-                });
-            }
+    // Прокручиваем к следующему видео
+    videoContainers[nextIndex].scrollIntoView();
 
-            isScrolling = false;
-        }, 300); // Задержка для плавного скроллинга
+    // Останавливаем текущее видео и воспроизводим следующее
+    if (currentIndex !== -1) {
+        videos[currentIndex].pause();
+        videos[currentIndex].currentTime = 0; // Перемотка в начало
+    }
+    videos[nextIndex].play().catch(error => {
+        console.error('Ошибка при воспроизведении видео:', error);
+    });
+}
+
+// Обработка касаний для мобильных устройств
+let touchStartY = 0;
+let touchEndY = 0;
+
+videoFeed.addEventListener('touchstart', (event) => {
+    if (detectDevice() !== 'mobile') return; // Работаем только на мобильных устройствах
+    touchStartY = event.touches[0].clientY;
+    event.preventDefault(); // Предотвращаем стандартное поведение
+}, { passive: false });
+
+videoFeed.addEventListener('touchmove', (event) => {
+    if (detectDevice() !== 'mobile') return; // Работаем только на мобильных устройствах
+    touchEndY = event.touches[0].clientY;
+    event.preventDefault(); // Предотвращаем стандартное поведение
+}, { passive: false });
+
+videoFeed.addEventListener('touchend', () => {
+    if (detectDevice() !== 'mobile') return; // Работаем только на мобильных устройствах
+
+    const threshold = 50; // Минимальное расстояние для срабатывания скролла
+    const deltaY = touchEndY - touchStartY;
+
+    if (Math.abs(deltaY) > threshold) {
+        if (deltaY > 0) {
+            // Прокрутка вверх
+            switchVideo(-1);
+        } else {
+            // Прокрутка вниз
+            switchVideo(1);
+        }
     }
 });
 
