@@ -104,6 +104,31 @@ video {
   border-radius: 8px;
   z-index: 1;
   box-sizing: border-box;
+  transition: transform 0.3s ease, opacity 0.3s ease; /* Анимация перемещения и прозрачности */
+  cursor: pointer; /* Курсор в виде указателя */
+}
+
+/* Подробное описание */
+.video-details {
+  position: absolute;
+  bottom: -100%; /* Начальное положение за пределами экрана */
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 16px;
+  border-radius: 8px 8px 0 0;
+  z-index: 2;
+  box-sizing: border-box;
+  transition: bottom 0.3s ease; /* Анимация появления */
+}
+
+/* Анимация при нажатии на видео */
+.video-card.active .video-info {
+  transform: translateY(-80px); /* Перемещение вверх */
+}
+
+.video-card.active .video-details {
+  bottom: 0; /* Появление подробного описания */
 }
 
 .video-info h3 {
