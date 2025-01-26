@@ -11,11 +11,17 @@ detailsButtons.forEach(button => {
 const videoFeed = document.querySelector('.video-feed');
 let isScrolling = false;
 
+// Включаем элементы управления для всех видео при загрузке страницы
+const videos = document.querySelectorAll('.video');
+videos.forEach(video => {
+    video.controls = true; // Элементы управления всегда видны
+    video.muted = true; // Отключаем звук для автоматического воспроизведения в Chrome
+});
+
 videoFeed.addEventListener('scroll', () => {
     if (!isScrolling) {
         isScrolling = true;
         setTimeout(() => {
-            const videos = document.querySelectorAll('.video');
             const videoContainers = document.querySelectorAll('.video-container');
 
             // Находим текущее активное видео
@@ -30,17 +36,29 @@ videoFeed.addEventListener('scroll', () => {
                 }
             });
 
-            // Останавливаем все видео, кроме текущего
+            // Останавливаем все видео, кроме текущего, и перематываем их в начало
             videos.forEach(video => {
                 if (video !== currentVideo) {
                     video.pause();
                     video.currentTime = 0; // Перемотка в начало
-                } else {
-                    video.play(); // Запуск текущего видео
                 }
             });
+
+            // Воспроизводим текущее видео, если оно не воспроизводится
+            if (currentVideo && currentVideo.paused) {
+                currentVideo.play().catch(error => {
+                    console.error('Ошибка при воспроизведении видео:', error);
+                });
+            }
 
             isScrolling = false;
         }, 300); // Задержка для плавного скроллинга
     }
+});
+
+// Разрешаем автоматическое воспроизведение после взаимодействия с пользователем
+document.addEventListener('click', () => {
+    videos.forEach(video => {
+        video.muted = false; // Включаем звук после взаимодействия с пользователем
+    });
 });
