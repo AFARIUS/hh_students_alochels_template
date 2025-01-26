@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const videos = [
-        { id: 1, title: 'Инженер программного обеспечения', description: 'Присоединяйся к нам!', videoUrl: 'videos/video1.mp4', country: 'Russia', city: 'Moscow', profession: 'IT' },
-        { id: 2, title: 'Маркетолог', description: 'We need a creative mind!', videoUrl: 'videos/video2.mp4', country: 'Russia', city: 'Pushkin', profession: 'Marketing' },
-        { id: 3, title: 'Графический дизайнер', description: 'Разукрашивай будущее с нами!', videoUrl: 'videos/video3.mp4', country: 'Belarus', city: 'Minsk', profession: 'Design' }
+        { id: 1, title: 'Инженер программного обеспечения', description: 'Присоединяйся к нам!', employer: 'Кто-то старый', videoUrl: 'videos/video1.mp4', country: 'Russia', city: 'Moscow', profession: 'IT' },
+        { id: 2, title: 'Маркетолог', description: 'Нам нужны креативные люди!', employer: 'Кто-то молодой', videoUrl: 'videos/video2.mp4', country: 'Russia', city: 'Pushkin', profession: 'Marketing' },
+        { id: 3, title: 'Графический дизайнер', description: 'Разукрашивай будущее с нами!', employer: 'Емеля', videoUrl: 'videos/video3.mp4', country: 'Belarus', city: 'Minsk', profession: 'Design' }
     ];
 
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </video>
                 <div class="video-info">
                     <h3>${video.title}</h3>
-                    <p>${video.description}</p>
+                    <p><strong>Работодатель: </strong> ${video.employer}</p>
+                    <p>${video.description} <a href="#" onclick="alert('Переход на страницу вакансии'); return false;">Подробнее...</a></p>
                 </div>
                 <button class="favorite-button ${favorites.some(fav => fav.id === video.id) ? 'active' : ''}" onclick="toggleFavorite(${video.id})">★</button>
             `;
