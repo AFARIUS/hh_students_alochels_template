@@ -1,53 +1,39 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лента вакансий</title>
+    <title>Job Video Finder</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <!-- Поисковая строка -->
-    <form>
-        <input type="text" placeholder="Искать здесь...">
-        <button type="submit" class="search-btn"></button>
-    </form>
-
-    <div class="video-feed">
-    <!-- Видео 1 -->
-        <div class="video-container">
-            <video class="video" src="vert1.mp4" autoplay muted loop></video>
-            <div class="text-overlay">
-                <p>Зарплата от 100 000 ₽, гибкий график.</p>
-            </div>
-            <div class="video-info">
-                <h2>Frontend-разработчик</h2>
-                    <button class="details-btn">Подробнее</button>
-            </div>
+    <div class="container">
+        <!-- Строка поиска и фильтры -->
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Поиск...">
+            <select id="countryFilter">
+                <option value="">Страна</option>
+                <option value="USA">США</option>
+                <option value="UK">Беларусь</option>
+                <option value="Russia">Россия</option>
+            </select>
+            <select id="cityFilter">
+                <option value="">Город</option>
+                <option value="Minsk">Минск</option>
+                <option value="Москва">Москва</option>
+                <option value="Pushkin">Пушкин</option>
+            </select>
+            <select id="professionFilter">
+                <option value="">Профессия</option>
+                <option value="IT">IT</option>
+                <option value="Marketing">Маркетинг</option>
+                <option value="Design">Дизайн</option>
+            </select>
         </div>
 
-    <!-- Видео 2 -->
-        <div class="video-container">
-            <video class="video" src="vert2.mp4" autoplay muted loop></video>
-            <div class="text-overlay">
-                <p>Работа в центре города, обучение за наш счет.</p>
-            </div>
-            <div class="video-info">
-                <h2>Менеджер проектов</h2>
-                <button class="details-btn">Подробнее</button>
-            </div>
-        </div>
-    <!-- Видео 3 -->
-        <div class="video-container">
-            <video class="video" src="vert1.mp4" autoplay muted loop></video>
-            <div class="text-overlay">
-                <p>Международная компания, удаленка.</p>
-            </div>
-            <div class="video-info">
-                <h2>Аналитик данных</h2>
-                <button class="details-btn">Подробнее</button>
-            </div>
+        <!-- Контейнер для видео -->
+        <div id="videoContainer" class="video-container">
+            <!-- Видео будут добавляться сюда -->
         </div>
     </div>
 

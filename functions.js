@@ -1,127 +1,116 @@
-// Функция для определения типа устройства
-function detectDevice() {
-    const userAgent = navigator.userAgent;
+document.addEventListener('DOMContentLoaded', () => {
+    const videos = [
+        { id: 1, title: 'Инженер программного обеспечения', description: 'Присоединяйся к нам!', videoUrl: 'videos/video1.mp4', country: 'Russia', city: 'Moscow', profession: 'IT' },
+        { id: 2, title: 'Маркетолог', description: 'We need a creative mind!', videoUrl: 'videos/video2.mp4', country: 'Russia', city: 'Pushkin', profession: 'Marketing' },
+        { id: 3, title: 'Графический дизайнер', description: 'Разукрашивай будущее с нами!', videoUrl: 'videos/video3.mp4', country: 'Belarus', city: 'Minsk', profession: 'Design' }
+    ];
 
-    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(userAgent)) {
-        return 'mobile';
-    } else if (/Tablet|iPad|PlayBook|Silk|Kindle|(Android(?!.*Mobile))/.test(userAgent)) {
-        return 'tablet';
-    } else {
-        return 'desktop';
-    }
-}
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const videoContainer = document.getElementById('videoContainer');
+    const searchInput = document.getElementById('searchInput');
+    const countryFilter = document.getElementById('countryFilter');
+    const cityFilter = document.getElementById('cityFilter');
+    const professionFilter = document.getElementById('professionFilter');
 
-// Функция для изменения верстки в зависимости от устройства
-function changeLayout() {
-    const device = detectDevice();
-    const body = document.body;
+    let currentVideoElement = null; // Текущее видео, которое воспроизводится
 
-    // Удаляем предыдущие классы, если они есть
-    body.classList.remove('mobile-layout', 'tablet-layout', 'desktop-layout');
+    function loadVideos(filteredVideos = videos) {
+        videoContainer.innerHTML = '';
+        filteredVideos.forEach((video, index) => {
+            const videoCard = document.createElement('div');
+            videoCard.className = 'video-card';
+            videoCard.innerHTML = `
+                <video id="video${video.id}" onclick="togglePause(${video.id})">
+                    <source src="${video.videoUrl}" type="video/mp4">
+                </video>
+                <div class="video-info">
+                    <h3>${video.title}</h3>
+                    <p>${video.description}</p>
+                </div>
+                <button class="favorite-button ${favorites.some(fav => fav.id === video.id) ? 'active' : ''}" onclick="toggleFavorite(${video.id})">★</button>
+            `;
+            videoContainer.appendChild(videoCard);
+        });
 
-    // Добавляем класс в зависимости от устройства
-    if (device === 'mobile') {
-        body.classList.add('mobile-layout');
-    } else {
-        body.classList.add('desktop-layout');
-    }
-}
-
-// Вызов функции при загрузке страницы
-window.onload = changeLayout;
-
-// Обработка кнопки "Подробнее"
-const detailsButtons = document.querySelectorAll('.details-btn');
-detailsButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        alert('Открыть полное описание вакансии');
-        // Здесь можно добавить переход на страницу с описанием вакансии
-    });
-});
-
-// Обработка скроллинга
-const videoFeed = document.querySelector('.video-feed');
-let isScrolling = false;
-
-// Включаем элементы управления для всех видео при загрузке страницы
-const videos = document.querySelectorAll('.video');
-videos.forEach(video => {
-    video.controls = true; // Элементы управления всегда видны
-    video.muted = true; // Отключаем звук для автоматического воспроизведения в Chrome
-});
-
-// Функция для переключения видео
-function switchVideo(direction) {
-    const videoContainers = document.querySelectorAll('.video-container');
-    let currentIndex = -1;
-
-    // Находим индекс текущего активного видео
-    videoContainers.forEach((container, index) => {
-        const rect = container.getBoundingClientRect();
-        if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-            currentIndex = index;
-        }
-    });
-
-    // Определяем индекс следующего видео
-    let nextIndex = currentIndex + direction;
-
-    // Проверяем границы
-    if (nextIndex < 0) {
-        nextIndex = 0; // Остаемся на первом видео
-    } else if (nextIndex >= videoContainers.length) {
-        nextIndex = videoContainers.length - 1; // Остаемся на последнем видео
+        // Настройка автоматического воспроизведения текущего видео
+        setupVideoAutoplay();
     }
 
-    // Прокручиваем к следующему видео
-    videoContainers[nextIndex].scrollIntoView();
+    // Функция для автоматического воспроизведения текущего видео
+    function setupVideoAutoplay() {
+        const videoElements = document.querySelectorAll('.video-card video');
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    const video = entry.target;
+                    if (entry.isIntersecting) {
+                        // Если видео в зоне видимости, воспроизводим его
+                        video.play();
+                        currentVideoElement = video;
+                    } else {
+                        // Если видео вне зоны видимости, останавливаем его
+                        video.pause();
+                        video.currentTime = 0; // Сбрасываем время воспроизведения
+                    }
+                });
+            },
+            {
+                threshold: 0.5, // Видео считается видимым, если 50% его площади на экране
+            }
+        );
 
-    // Останавливаем текущее видео и воспроизводим следующее
-    if (currentIndex !== -1) {
-        videos[currentIndex].pause();
-        videos[currentIndex].currentTime = 0; // Перемотка в начало
+        videoElements.forEach((video) => {
+            observer.observe(video);
+        });
     }
-    videos[nextIndex].play().catch(error => {
-        console.error('Ошибка при воспроизведении видео:', error);
-    });
-}
 
-// Обработка касаний для мобильных устройств
-let touchStartY = 0;
-let touchEndY = 0;
-
-videoFeed.addEventListener('touchstart', (event) => {
-    if (detectDevice() !== 'mobile') return; // Работаем только на мобильных устройствах
-    touchStartY = event.touches[0].clientY;
-    event.preventDefault(); // Предотвращаем стандартное поведение
-}, { passive: false });
-
-videoFeed.addEventListener('touchmove', (event) => {
-    if (detectDevice() !== 'mobile') return; // Работаем только на мобильных устройствах
-    touchEndY = event.touches[0].clientY;
-    event.preventDefault(); // Предотвращаем стандартное поведение
-}, { passive: false });
-
-videoFeed.addEventListener('touchend', () => {
-    if (detectDevice() !== 'mobile') return; // Работаем только на мобильных устройствах
-
-    const threshold = 50; // Минимальное расстояние для срабатывания скролла
-    const deltaY = touchEndY - touchStartY;
-
-    if (Math.abs(deltaY) > threshold) {
-        if (deltaY > 0) {
-            // Прокрутка вверх
-            switchVideo(-1);
+    // Функция для управления паузой при нажатии на видео
+    window.togglePause = (id) => {
+        const video = document.getElementById(`video${id}`);
+        if (video.paused) {
+            video.play();
         } else {
-            // Прокрутка вниз
-            switchVideo(1);
+            video.pause();
         }
-    }
-});
+    };
 
-// Разрешаем автоматическое воспроизведение после взаимодействия с пользователем
-document.addEventListener('click', () => {
-    videos.forEach(video => {
-        video.muted = false; // Включаем звук после взаимодействия с пользователем
-    });
+    // Функция для добавления/удаления видео в избранное
+    window.toggleFavorite = (id) => {
+        const video = videos.find(v => v.id === id);
+        const favoriteButton = document.querySelector(`#video${id} + .video-info + .favorite-button`);
+        if (favorites.some(fav => fav.id === id)) {
+            favorites = favorites.filter(fav => fav.id !== id);
+            favoriteButton.classList.remove('active');
+        } else {
+            favorites.push(video);
+            favoriteButton.classList.add('active');
+        }
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    };
+
+    // Функция для фильтрации видео
+    function filterVideos() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const country = countryFilter.value;
+        const city = cityFilter.value;
+        const profession = professionFilter.value;
+
+        const filteredVideos = videos.filter(video => {
+            return (video.title.toLowerCase().includes(searchTerm) || video.description.toLowerCase().includes(searchTerm)) &&
+                   (!country || video.country === country) &&
+                   (!city || video.city === city) &&
+                   (!profession || video.profession === profession);
+        });
+
+        loadVideos(filteredVideos);
+    }
+
+    // Слушатели событий для фильтрации
+    searchInput.addEventListener('input', filterVideos);
+    countryFilter.addEventListener('change', filterVideos);
+    cityFilter.addEventListener('change', filterVideos);
+    professionFilter.addEventListener('change', filterVideos);
+
+    // Загрузка видео при старте
+    loadVideos();
 });
