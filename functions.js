@@ -3,9 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 1, title: 'Разработчик видеоигр', description: 'Присоединяйся к нам!', employer: 'Ubisoft', videoUrl: 'videos/video1.mp4', country: 'Japan', city: 'Tokyo', profession: 'IT' },
         { id: 2, title: 'Программист', description: 'Нам нужны идеи! Зарплата от 80 тыс. руб. / мес.', employer: 'From Software', videoUrl: 'videos/video2.mp4', country: 'Russia', city: 'Moscow', profession: 'IT' },
         { id: 3, title: 'Моушн-дизайнер', description: 'Двигай будущее с нами!', employer: 'Fiverr', videoUrl: 'videos/video3.mp4', country: 'Belarus', city: 'Minsk', profession: 'Design' },
-        { id: 4, title: 'Сценарист', description: 'Создавай уникальные истории!', employer: 'Fiverr', videoUrl: 'videos/video4.mp4', country: 'Belarus', city: 'Minsk', profession: 'Screenwrite' },
-        { id: 5, title: 'Маркетолог', description: 'Продвигай наши проекты!', employer: 'Microsoft', videoUrl: 'videos/video5.mp4', country: 'USA', city: 'New York', profession: 'Marketing' },
-        { id: 6, title: 'Журналист', description: 'Описывай наше будущее!', employer: 'Roskomnadzor', videoUrl: 'videos/video6.mp4', country: 'Russia', city: 'Moscow', profession: 'Journalism' },
+        { id: 4, title: 'Тестировщик', description: 'Работай за печеньки!', employer: 'Fiverr', videoUrl: 'videos/video4.mp4', country: 'Belarus', city: 'Minsk', profession: 'IT' },
+        { id: 5, title: '3D-художник', description: 'Рисуй в пространстве, как никто другой!', employer: 'Microsoft', videoUrl: 'videos/video5.mp4', country: 'USA', city: 'New York', profession: 'Design' }
     ];
 
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -23,8 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const videoCard = document.createElement('div');
             videoCard.className = 'video-card';
             videoCard.innerHTML = `
-                <video id="video${video.id}" onclick="togglePause(${video.id})" loop>
-                    <source src="${video.videoUrl}" type="video/mp4">
+                <video id="video${video.id}" onclick="togglePause(${video.id})" loop muted playsinline>
+                    <!-- Источник видео будет добавлен динамически -->
                 </video>
                 <div class="video-info">
                     <h3>${video.title}</h3>
@@ -45,11 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
             (entries) => {
                 entries.forEach((entry) => {
                     const video = entry.target;
+                    const videoId = video.id.replace('video', '');
+                    const videoData = videos.find(v => v.id === parseInt(videoId));
+
                     if (entry.isIntersecting && !isSearchOpen) {
-                        video.play();
+                        // Загружаем видео, если оно видимо
+                        if (!video.src) {
+                            video.src = videoData.videoUrl;
+                            video.load();
+                        }
+                        video.play().catch((error) => {
+                            console.error(`Ошибка воспроизведения видео: ${video.id}`, error);
+                        });
                         currentVideoElement = video;
                     } else {
+                        // Останавливаем и выгружаем видео, если оно не видимо
                         video.pause();
+                        video.removeAttribute('src');
+                        video.load(); // Очищаем видео из памяти
                     }
                 });
             },
