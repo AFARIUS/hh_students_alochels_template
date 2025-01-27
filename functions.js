@@ -1,8 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const videos = [
-        { id: 1, title: 'Инженер программного обеспечения', description: 'Присоединяйся к нам!', employer: 'Кто-то старый', videoUrl: 'videos/video1.mp4', country: 'Russia', city: 'Moscow', profession: 'IT' },
-        { id: 2, title: 'Маркетолог', description: 'Нам нужны креативные люди!', employer: 'Кто-то молодой', videoUrl: 'videos/video2.mp4', country: 'Russia', city: 'Pushkin', profession: 'Marketing' },
-        { id: 3, title: 'Графический дизайнер', description: 'Разукрашивай будущее с нами!', employer: 'Емеля', videoUrl: 'videos/video3.mp4', country: 'Belarus', city: 'Minsk', profession: 'Design' }
+        { id: 1, title: 'Разработчик видеоигр', description: 'Присоединяйся к нам!', employer: 'Ubisoft', videoUrl: 'videos/video1.mp4', country: 'Japan', city: 'Tokyo', profession: 'IT' },
+        { id: 2, title: 'Программист', description: 'Нам нужны идеи! Зарплата от 80 тыс. руб. / мес.', employer: 'From Software', videoUrl: 'videos/video2.mp4', country: 'Russia', city: 'Moscow', profession: 'IT' },
+        { id: 3, title: 'Моушн-дизайнер', description: 'Двигай будущее с нами!', employer: 'Fiverr', videoUrl: 'videos/video3.mp4', country: 'Belarus', city: 'Minsk', profession: 'Design' },
+        { id: 4, title: 'Сценарист', description: 'Создавай уникальные истории!', employer: 'Fiverr', videoUrl: 'videos/video4.mp4', country: 'Belarus', city: 'Minsk', profession: 'Screenwrite' },
+        { id: 5, title: 'Маркетолог', description: 'Продвигай наши проекты!', employer: 'Microsoft', videoUrl: 'videos/video5.mp4', country: 'USA', city: 'New York', profession: 'Marketing' },
+        { id: 6, title: 'Журналист', description: 'Описывай наше будущее!', employer: 'Roskomnadzor', videoUrl: 'videos/video6.mp4', country: 'Russia', city: 'Moscow', profession: 'Journalism' },
     ];
 
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
