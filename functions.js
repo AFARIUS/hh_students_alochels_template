@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const videoCard = document.createElement('div');
             videoCard.className = 'video-card';
             videoCard.innerHTML = `
-                <video id="video${video.id}" onclick="togglePause(${video.id})" loop muted playsinline>
+                <video id="video${video.id}" onclick="togglePause(${video.id})" loop playsinline>
                     <!-- Источник видео будет добавлен динамически -->
                 </video>
                 <div class="video-info">
